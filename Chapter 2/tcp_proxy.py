@@ -31,11 +31,11 @@ def receive_from(connection):
     # keep reading into the buffer until there's no more data or timeout expires
     try:
         while True:
-            data = connection.recv(4096)
-            if not data:
-                break
-            buffer += data
+            if data := connection.recv(4096):
+                buffer += data
 
+            else:
+                break
     except TimeoutError:
         pass
 
@@ -109,15 +109,15 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first):
         
 def server_loop(local_host, local_port, remote_host, remote_port, receive_first):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
+
     try:
         server.bind((local_host, local_port))
     except socket.error as e:
         print(f"[!!] Failed to listen on {local_host} {local_port}")
-        print(f"[!!] Check for other listening sockets or correct permissions")
+        print("[!!] Check for other listening sockets or correct permissions")
         print(f"Caught exception: {e}")
         sys.exit()
-    
+
     print(f"[*] Listening on {local_host}, {local_port}")
 
     server.listen(5)
@@ -147,11 +147,7 @@ def main():
     # connect and receive data before sending to remote host
     receive_first = sys.argv[5]
 
-    if "True" in receive_first:
-        receive_first = True
-    else:
-        receive_first = False
-
+    receive_first = "True" in receive_first
     # start our listening socket
     server_loop(local_host, local_port, remote_host, remote_port, receive_first)
 

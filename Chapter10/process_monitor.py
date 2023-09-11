@@ -12,23 +12,21 @@ def get_process_privileges(pid):
         hproc = win32api.OpenProcess(win32con.PROCESS_QUERY_INFORMATION,
                                      False,
                                      pid)
-        
+
         # open main process token
         htok = win32security.OpenProcessToken(hproc, win32con.TOKEN_QUERY)
-        
+
         # retrieve the list of privileges enabled
         privs = win32security.GetTokenInformation(htok, win32security.TokenPrivileges)
-        
-        # iterate over privileges and output the ones that are enabled
-        priv_list = []
-        for priv_id, priv_flags in privs:
-            # check if privilege is enabled
-            if priv_flags == 3:
-                priv_list.append(win32security.LookupPrivilegeName(None, priv_id))
-                
+
+        priv_list = [
+            win32security.LookupPrivilegeName(None, priv_id)
+            for priv_id, priv_flags in privs
+            if priv_flags == 3
+        ]
     except:
         priv_list.append("N/A")
-        
+
     return "|".join(priv_list)
 
 def log_to_file(message):

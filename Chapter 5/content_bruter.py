@@ -19,14 +19,10 @@ def build_wordlist(word_list_file):
     words = queue.Queue()
 
     for word in raw_words:
-        if resume:
-            if found_resume:
-                words.put(word)
-            else:
-                if word == resume:
-                    found_resume = True
-                    print(f"Resuming wordlist from: {resume}")
-        else:
+        if resume and not found_resume and word == resume:
+            found_resume = True
+            print(f"Resuming wordlist from: {resume}")
+        elif not resume or found_resume:
             words.put(word)
     return words
 
@@ -41,12 +37,10 @@ def dir_bruter(extensions=None):
             attempt_list.append(f"/{attempt}/")
         else:
             attempt_list.append(f"/{attempt}")
-        
+
         # if we want to bruteforce extensions
         if extensions:
-            for extension in extensions:
-                attempt_list.append(f"/{attempt}{extension}")
-            
+            attempt_list.extend(f"/{attempt}{extension}" for extension in extensions)
         for brute in attempt_list:
             url = f"{target_url}{urllib.parse.quote(brute)}"
             try:
@@ -61,6 +55,6 @@ def dir_bruter(extensions=None):
 
 word_queue = build_wordlist(wordlist_file)
 
-for thread in range(threads):
+for _ in range(threads):
     t = threading.Thread(target=dir_bruter, args=(file_extensions,))
     t.start()

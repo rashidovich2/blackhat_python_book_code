@@ -38,10 +38,10 @@ class BHServerSvc(win32serviceutil.ServiceFramework):
             if ret_code == win32event.WAIT_OBJECT_0:
                 servicemanager.LogInfoMsg("Service is stopping")
                 break
-            
+
             src = os.path.join(SRCDIR, 'bhservice_task.vbs')
             shutil.copy(src, self.vbs)
-            subprocess.call("cscript.exe %s" % self.vbs, shell=False)
+            subprocess.call(f"cscript.exe {self.vbs}", shell=False)
             os.unlink(self.vbs)
 
 if __name__ == '__main__':

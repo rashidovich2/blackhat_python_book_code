@@ -52,8 +52,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory):
             http_service = traffic.getHttpService()
             host = http_service.getHost()
             self.host.add(host)
-            http_response = traffic.getResponse()
-            if http_response:
+            if http_response := traffic.getResponse():
                 self.get_words(http_response)
         self.display_wordlist()
         return
@@ -81,8 +80,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory):
         suffixes = ['', '1', '!', year]
         mangled = []
         for password in (word, word.capitalize()):
-            for suffix in suffixes:
-                mangled.append(f"{password}, {suffix}")
+            mangled.extend(f"{password}, {suffix}" for suffix in suffixes)
         return mangled
     
 

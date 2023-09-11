@@ -5,11 +5,7 @@ import os
 host = "192.168.0.196"
 
 # create a raw socket and bind it to the public interface
-if os.name == "nt":
-    socket_protocol = socket.IPPROTO_IP # windows OS
-else:
-    socket_protocol = socket.IPPROTO_ICMP # unix OS
-
+socket_protocol = socket.IPPROTO_IP if os.name == "nt" else socket.IPPROTO_ICMP
 sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)
 
 # i had trouble with my VM here following along the lesson of the book

@@ -26,9 +26,7 @@ def get_http_headers(http_payload):
         headers = dict(re.findall(r"(?P<name>.*?): (?P<value>.*?)\r\n", headers_raw))
     except:
         return None
-    if "Content-Type" not in headers:
-        return None
-    return headers
+    return None if "Content-Type" not in headers else headers
 
 def extract_image(headers, http_payload):
     image = None

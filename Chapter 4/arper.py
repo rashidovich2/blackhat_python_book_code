@@ -85,7 +85,7 @@ try:
     print(f"[*] Starting sniffer for {packet_count} packets")
     bpf_filter = f"ip host {tgt_ip}"
     packets = kam.sniff(count=packet_count, filter=bpf_filter, iface=interface)
-    print(f"[*] Writing packets to arper.pcap")
+    print("[*] Writing packets to arper.pcap")
     kam.wrpcap("arper.pcap", packets)
 
 except KeyboardInterrupt:

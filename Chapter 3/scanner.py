@@ -76,11 +76,7 @@ class ICMP(ctypes.Structure):
         self.socket_buffer = socket_buffer
 
 # create a raw socket and bind it to the public interface
-if os.name == "nt":
-    socket_protocol = socket.IPPROTO_IP # windows OS
-else:
-    socket_protocol = socket.IPPROTO_ICMP # unix OS
-
+socket_protocol = socket.IPPROTO_IP if os.name == "nt" else socket.IPPROTO_ICMP
 sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)
 
 # i had trouble with my VM here following along the lesson of the book
@@ -112,7 +108,7 @@ try:
         # if it's ICMP we want the details:
         if ip_header.protocol == "ICMP":
             # find where our ICMP packet starts
-            offset = ip_header.ihl * 4 
+            offset = ip_header.ihl * 4
             buf = raw_buffer[offset:offset + ctypes.sizeof(ICMP)]
 
             # create our ICMP structure
@@ -120,17 +116,13 @@ try:
 
             print(f"ICMP -> Type: {icmp_header.type}, {icmp_header.code}")
 
-            # now check for the TYPE 3 and CODE 3
-            # that indicates a host is up but has no port available to talk to
-            if icmp_header.code == 3 and icmp_header.type == 3:
-
                 # check to make sure we are receiving the response that lands on our subnet
-                if ip_address(ip_header.src_address) in ip_network(tgt_subnet):
+            if ip_address(ip_header.src_address) in ip_network(tgt_subnet):
                     # test our magic message
-                    if raw_buffer[len(raw_buffer)- len(tgt_message):] == tgt_message:
+                if raw_buffer[len(raw_buffer)- len(tgt_message):] == tgt_message:
+                    if icmp_header.code == 3 and icmp_header.type == 3:
                         print(f"Host Up: {ip_header.src_address}")
 
-# handle CTRL-C
 except KeyboardInterrupt:
     # turn off promiscuos mode if it has been activated
     if os.name == "nt":

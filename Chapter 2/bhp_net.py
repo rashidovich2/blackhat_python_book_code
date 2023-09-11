@@ -37,12 +37,11 @@ def client_handler(client_socket):
         file_buffer = ""
 
         while True:
-            data = client_socket.recv(1024)
-            if not data:
-                break
-            else:
+            if data := client_socket.recv(1024):
                 file_buffer += data
 
+            else:
+                break
     try:
         with open (upload_destination, "wb") as file_descriptor:
             file_descriptor.write(file_buffer.encode("utf-8"))
@@ -65,7 +64,7 @@ def client_handler(client_socket):
             cmd_buffer = b""
             while b"\n" not in cmd_buffer:
                 cmd_buffer += client_socket.recv(1024)
-            
+
             #execute and send back results
             response = run_command(cmd_buffer)
             client_socket.send(response)
@@ -112,7 +111,7 @@ def client_sender(buffer):
 
                 if recv_len < 4096:
                     break
-            
+
             print(response.decode("utf-8"), end=" ")
 
             #wait for further input and then send it off
@@ -121,7 +120,7 @@ def client_sender(buffer):
             client.send(buffer.encode("utf-8"))
 
     except socket.error as e:
-        print(f"[*] Exception caught. Exiting.")
+        print("[*] Exception caught. Exiting.")
         print(f"[*] Details of error: {e}")
         client.close()
 
@@ -174,9 +173,9 @@ def main():
                 port = int(a)
             else:
                 assert False, "Unhandled option"
-    
+
     except getopt.GetoptError as e:
-        print(str(e))
+        print(e)
         usage_info()
 
     if not listen and len(target) and port >0:

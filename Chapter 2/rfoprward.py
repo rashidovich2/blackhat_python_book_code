@@ -136,8 +136,7 @@ def parse_options():
         type="string",
         dest="user",
         default=getpass.getuser(),
-        help="username for SSH authentication (default: %s)"
-        % getpass.getuser(),
+        help=f"username for SSH authentication (default: {getpass.getuser()})",
     )
     parser.add_option(
         "-K",
